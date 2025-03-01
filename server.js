@@ -5,6 +5,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const ccxt = require('ccxt');
 const { Web3 } = require('web3');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
@@ -21,6 +22,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Serve static files from the client build directory
+app.use(express.static(path.join(__dirname, 'client/dist')));
+
 // Initialize Web3
 const web3 = new Web3(new Web3.providers.HttpProvider('https://bsc-dataseed1.binance.org'));
 
@@ -33,9 +37,9 @@ io.on('connection', (socket) => {
   });
 });
 
-// Basic routes
-app.get('/', (req, res) => {
-  res.json({ status: 'Server is running' });
+// API routes
+app.get('/api', (req, res) => {
+  res.json({ status: 'API is running' });
 });
 
 app.get('/api/health', (req, res) => {
@@ -75,6 +79,11 @@ const improveTrading = async () => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
+});
+
+// Serve React app for any other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/dist/index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
