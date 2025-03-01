@@ -1,0 +1,33 @@
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.MuiPaper-root {
+  background-color: #1e1e1e !important;
+}
+
+.MuiTableContainer-root {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.MuiTableRow-root:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
