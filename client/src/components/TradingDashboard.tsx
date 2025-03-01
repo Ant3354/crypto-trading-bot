@@ -12,6 +12,7 @@ import {
   Chip,
   Grid
 } from '@mui/material';
+import io from 'socket.io-client';
 
 import { Opportunity } from '../types';
 
@@ -21,10 +22,11 @@ export const TradingDashboard = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const wsUrl = import.meta.env.MODE === 'production'
-      ? 'wss://crypto-trading-bot-server.herokuapp.com'
-      : 'ws://localhost:5000';
-    const socket = new WebSocket(wsUrl);
+    const socket = io(
+      process.env.NODE_ENV === 'production'
+        ? 'https://crypto-trading-bot-server.herokuapp.com'
+        : 'http://localhost:5000'
+    );
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);

@@ -49,10 +49,11 @@ export const NewTokens = () => {
   const [tokens, setTokens] = useState<Token[]>([]);
 
   useEffect(() => {
-    const socketUrl = import.meta.env.MODE === 'production'
-      ? 'https://crypto-trading-bot-server.herokuapp.com'
-      : 'http://localhost:5000';
-    const socket = io(socketUrl);
+    const socket = io(
+      process.env.NODE_ENV === 'production'
+        ? 'https://crypto-trading-bot-server.herokuapp.com'
+        : 'http://localhost:5000'
+    );
 
     socket.on('newTokens', (newTokens: Token[]) => {
       setTokens(newTokens);
