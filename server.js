@@ -10,14 +10,14 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: process.env.ALLOWED_ORIGINS || "https://crypto-trading-9tt5anlo2-mnnio1234-gmailcoms-projects.vercel.app",
+    origin: process.env.ALLOWED_ORIGINS || "https://crypto-trading-bot.vercel.app",
     methods: ["GET", "POST"]
   }
 });
 
 // Middleware
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS || "https://crypto-trading-9tt5anlo2-mnnio1234-gmailcoms-projects.vercel.app"
+  origin: process.env.ALLOWED_ORIGINS || "https://crypto-trading-bot.vercel.app"
 }));
 app.use(express.json());
 
@@ -34,6 +34,10 @@ io.on('connection', (socket) => {
 });
 
 // Basic routes
+app.get('/', (req, res) => {
+  res.json({ status: 'Server is running' });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'healthy' });
 });
@@ -41,10 +45,7 @@ app.get('/api/health', (req, res) => {
 // Market analysis function
 const analyzeMarketOpportunities = async () => {
   try {
-    // Initialize exchange
     const exchange = new ccxt.binance();
-    
-    // Fetch market data
     const markets = await exchange.fetchMarkets();
     const opportunities = markets
       .filter(market => market.active && market.quote === 'USDT')
@@ -53,10 +54,7 @@ const analyzeMarketOpportunities = async () => {
         baseAsset: market.base,
         quoteAsset: market.quote
       }));
-
-    // Emit market opportunities to connected clients
     io.emit('marketOpportunities', opportunities);
-    
     return opportunities;
   } catch (error) {
     console.error('Error analyzing market opportunities:', error);
@@ -79,10 +77,8 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
-  // Start trading improvement interval
   setInterval(improveTrading, process.env.UPDATE_INTERVAL || 60000);
 });
