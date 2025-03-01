@@ -12,9 +12,19 @@ import {
   Chip,
   Grid
 } from '@mui/material';
-import io from 'socket.io-client';
+import { io } from 'socket.io-client';
 
-import { Opportunity } from '../types';
+interface Opportunity {
+  symbol: string;
+  action: 'BUY' | 'SELL' | 'HOLD';
+  price: number;
+  volume: number;
+  securityCheck: {
+    liquidityCheck: {
+      hasLiquidity: boolean;
+    };
+  };
+}
 
 export const TradingDashboard = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -22,27 +32,24 @@ export const TradingDashboard = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const socket = io(
-      process.env.NODE_ENV === 'production'
-        ? 'https://crypto-trading-bot-server.herokuapp.com'
-        : 'http://localhost:5000'
-    );
+    const socket = io(window.location.hostname === 'localhost' ? 'http://localhost:5000' : window.location.origin);
 
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'opportunities') {
-        setOpportunities(data.opportunities);
-        setIsLoading(false);
-      }
-    };
-
-    socket.onerror = () => {
-      setError('WebSocket connection error');
+    socket.on('connect', () => {
       setIsLoading(false);
-    };
+    });
+
+    socket.on('connect_error', () => {
+      setError('Failed to connect to server');
+      setIsLoading(false);
+    });
+
+    socket.on('opportunities', (data: Opportunity[]) => {
+      setOpportunities(data);
+      setIsLoading(false);
+    });
 
     return () => {
-      socket.close();
+      socket.disconnect();
     };
   }, []);
 
