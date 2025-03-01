@@ -4,9 +4,13 @@ node_modules/
 .env.*.local
 .DS_Store
 npm-debug.log*
+.vercel
 yarn-debug.log*
 yarn-error.log*
 dist/
 build/
 .vscode/
-.idea/ 
+.idea/
+.env.development.local
+.env.test.local
+.env.production.local 

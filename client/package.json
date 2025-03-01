@@ -22,9 +22,10 @@
     "axios": "^1.8.1",
     "ccxt": "^4.4.63",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-error-boundary": "^5.0.0",
     "recharts": "^2.15.1",
     "socket.io": "^4.8.1",
@@ -41,7 +42,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
     "typescript": "^5.0.4",
-    "vite": "^4.3.8",
-    "vercel": "^24.0.0"
+    "vercel": "^24.0.0",
+    "vite": "^4.3.8"
   }
 }
