@@ -38,6 +38,32 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'healthy' });
 });
 
+// Market analysis function
+const analyzeMarketOpportunities = async () => {
+  try {
+    // Initialize exchange
+    const exchange = new ccxt.binance();
+    
+    // Fetch market data
+    const markets = await exchange.fetchMarkets();
+    const opportunities = markets
+      .filter(market => market.active && market.quote === 'USDT')
+      .map(market => ({
+        symbol: market.symbol,
+        baseAsset: market.base,
+        quoteAsset: market.quote
+      }));
+
+    // Emit market opportunities to connected clients
+    io.emit('marketOpportunities', opportunities);
+    
+    return opportunities;
+  } catch (error) {
+    console.error('Error analyzing market opportunities:', error);
+    return [];
+  }
+};
+
 // Trading improvement function
 const improveTrading = async () => {
   try {
